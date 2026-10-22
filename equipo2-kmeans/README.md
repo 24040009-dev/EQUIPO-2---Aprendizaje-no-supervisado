@@ -18,4 +18,12 @@ Este proyecto implementa un sistema de Inteligencia Artificial No Supervisada ca
 Abre tu terminal o símbolo del sistema (CMD / PowerShell) y ejecuta:
 ```bash
 git clone https://github.com/24040009-dev/EQUIPO-2---Aprendizaje-no-supervisado.git
-cd equipo2-kmeans
+
+cd EQUIPO-2---Aprendizaje-no-supervisado
+
+python -m venv venv
+.\venv\Scripts\activate
+
+pip install -r requirements.txt
+
+streamlit run app.py
