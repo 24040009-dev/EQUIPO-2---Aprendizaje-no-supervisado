@@ -160,18 +160,3 @@ m1.metric("Colores Originales (Aprox)", f"{metricas['colores_unicos_orig']:,}")
 m2.metric("Colores Objetivo (K)", f"{k_seleccionado}")
 m3.metric("Inercia K-Means (SSE)", f"{metricas['inercia']:,.0f}")
 m4.metric("Iteraciones de Convergencia", f"{metricas['iteraciones']}")
-
-with st.expander("🎓 Preguntas clave para defender este proyecto con el profesor", expanded=True):
-    st.markdown(f"""
-    **1. ¿Qué representan los grupos/clusters encontrados?**
-    * Cada grupo representa una **región de color dominante** en el espacio tridimensional RGB. 
-    * Por ejemplo, si subes una foto de un paisaje, K-Means agrupa todos los tonos azulados (cielo, agua) en un único centroide promedio, los verdes (árboles, pasto) en otro, etc.
-
-    **2. ¿Qué señal confirma que el sistema funciona correctamente?**
-    * **Con $K$ pequeño ($K=2, 4$):** La imagen se ve "aplanada", con bordes marcados de tono plano y pérdida drástica de detalles (efecto cartelización o posterización).
-    * **Con $K$ grande ($K=16, 32$):** La imagen comprimida es casi indistinguible visualmente de la original, pero usando una fracción muy pequeña de colores.
-
-    **3. ¿Cómo calcula K-Means los colores sin supervisión?**
-    * Utiliza la **distancia euclidiana** en 3D entre el valor $(R, G, B)$ de cada píxel y las $K$ posiciones iniciales.
-    * Mueve iterativamente los $K$ centroides al promedio geométrico de los píxeles asignados a cada uno, hasta que los centroides dejan de moverse (convergencia alcanzada en {metricas['iteraciones']} iteraciones).
-    """)
