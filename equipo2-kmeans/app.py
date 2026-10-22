@@ -152,3 +152,11 @@ for i, (rgb, pct) in enumerate(zip(centros_rgb, porcentajes)):
 
 st.divider()
 
+# --- MÉTRICAS Y EXPLICACIÓN PARA DEFENDER EN CLASE ---
+st.subheader("📊 Análisis Técnico y Preguntas de Defensa")
+
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("Colores Originales (Aprox)", f"{metricas['colores_unicos_orig']:,}")
+m2.metric("Colores Objetivo (K)", f"{k_seleccionado}")
+m3.metric("Inercia K-Means (SSE)", f"{metricas['inercia']:,.0f}")
+m4.metric("Iteraciones de Convergencia", f"{metricas['iteraciones']}")
