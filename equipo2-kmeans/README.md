@@ -17,5 +17,5 @@ Este proyecto implementa un sistema de Inteligencia Artificial No Supervisada ca
 #### 1. Clonar el repositorio y abrir en VS Code
 Abre tu terminal o símbolo del sistema (CMD / PowerShell) y ejecuta:
 ```bash
-git clone <URL_DE_TU_REPOSITY>
+git clone <(https://github.com/24040009-dev/EQUIPO-2---Aprendizaje-no-supervisado.git)>
 cd equipo2-kmeans
