@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Estilos CSS personalizados para mejorar el diseño
+# Estilos CSS personalizados
 st.markdown("""
 <style>
     .stApp { background-color: #0f172a; color: #f8fafc; }
@@ -34,40 +34,33 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         border: 1px solid rgba(255,255,255,0.2);
     }
-    .metric-box {
-        background-color: #1e293b;
-        padding: 15px;
-        border-radius: 8px;
-        border-left: 4px solid #38bdf8;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # Encabezado principal
 st.markdown("""
 <div class="title-banner">
-    <h1>🧠 EQUIPO 2: Aprendizaje No Supervisado</h1>
+    <h1>EQUIPO 2: Aprendizaje No Supervisado</h1>
     <h3>"El que descubre solo" — Compresión de Imágenes con K-Means</h3>
 </div>
 """, unsafe_allow_html=True)
 
-# Explicación teórica inicial
-with st.expander("📖 ¿Por qué este modelo es Aprendizaje No Supervisado? (Da clic aquí)", expanded=False):
+# Explicación del funcionamiento
+with st.expander("📖 ¿Por qué este modelo es Aprendizaje No Supervisado?", expanded=False):
     st.markdown("""
-    * **Sin Etiquetas Previa:** La máquina recibe millones de píxeles sin saber qué representan (no sabe si es "cielo", "piel" o "pasto").
-    * **Descubrimiento Autónomo:** Agrupa los colores de la imagen organizando los píxeles en un espacio tridimensional $(R, G, B)$ según su cercanía matemática (Distancia Euclidiana).
-    * **Centroides (Colores Dominantes):** El algoritmo calcula por sí mismo los $K$ puntos centrales que mejor representan todos los colores de la imagen original.
+    * **Sin Etiquetas Previas:** La máquina recibe la imagen como píxeles sin clasificar.
+    * **Descubrimiento Autónomo:** Agrupa los colores organizando los píxeles en un espacio tridimensional (RGB) según su cercanía matemática.
+    * **Centroides (Colores Dominantes):** El algoritmo calcula por sí mismo los K puntos centrales que mejor representan los colores de la imagen.
     """)
 
 # Función para generar una imagen de muestra en caso de no subir archivo
 def crear_imagen_muestra():
     img = Image.new('RGB', (400, 400), color=(30, 41, 59))
     draw = ImageDraw.Draw(img)
-    # Dibujar formas coloridas para probar K-Means
-    draw.ellipse([50, 50, 200, 200], fill=(239, 68, 68))    # Rojo
-    draw.rectangle([180, 150, 350, 320], fill=(59, 130, 246)) # Azul
-    draw.polygon([(200, 50), (350, 80), (280, 220)], fill=(34, 197, 94)) # Verde
-    draw.ellipse([100, 220, 250, 370], fill=(234, 179, 8))   # Amarillo
+    draw.ellipse([50, 50, 200, 200], fill=(239, 68, 68))
+    draw.rectangle([180, 150, 350, 320], fill=(59, 130, 246))
+    draw.polygon([(200, 50), (350, 80), (280, 220)], fill=(34, 197, 94))
+    draw.ellipse([100, 220, 250, 370], fill=(234, 179, 8))
     return img
 
 # --- BARRA LATERAL (Panel de Control) ---
@@ -78,10 +71,9 @@ archivo_subido = st.sidebar.file_uploader(
     type=["jpg", "jpeg", "png", "webp"]
 )
 
-# Control deslizante (Slider) para seleccionar K
 st.sidebar.subheader("2. Selecciona el número de colores (K):")
 
-# Botones rápidos para valores típicos de K exigidos en la rúbrica
+# Botones rápidos para valores típicos de K (4, 8, 16)
 col_b1, col_b2, col_b3 = st.sidebar.columns(3)
 k_preset = None
 if col_b1.button("K = 4"): k_preset = 4
@@ -108,7 +100,7 @@ else:
 
 # --- PROCESAMIENTO EN EL BACKEND ---
 inicio_tiempo = time.time()
-with st.spinner(f"Entrenando K-Means con K={k_seleccionado}..."):
+with st.spinner(f"Ejecutando K-Means con K={k_seleccionado}..."):
     imagen_comprimida, centros_rgb, porcentajes, metricas = comprimir_imagen(
         imagen_original, 
         k=k_seleccionado
@@ -122,21 +114,19 @@ col_izq, col_der = st.columns(2)
 
 with col_izq:
     st.markdown("### Imagen Original")
-    st.image(imagen_original, use_column_width=True)
+    st.image(imagen_original, use_container_width=True)
     st.caption(f"📐 Dimensiones: {metricas['dimensiones'][0]}x{metricas['dimensiones'][1]}px | 🎨 ~{metricas['colores_unicos_orig']:,} colores únicos")
 
 with col_der:
-    st.markdown(f"### Imagen Comprimida ($K = {k_seleccionado}$)")
-    st.image(imagen_comprimida, use_column_width=True)
+    st.markdown(f"### Imagen Comprimida (K = {k_seleccionado})")
+    st.image(imagen_comprimida, use_container_width=True)
     st.caption(f"⚡ Tiempo de cómputo: {tiempo_ejecucion:.2f} s | 🎨 Reducido a solo **{k_seleccionado}** colores exactos")
 
 st.divider()
 
 # --- PALETA DE COLORES ENCONTRADA ---
 st.subheader("🎨 Paleta de Colores Dominantes Encontrada por K-Means")
-st.write("El algoritmo encontró de forma autónoma estos colores representativos (centroides):")
 
-# Mostrar las tarjetas de color con código HEX y % de píxeles
 cols_paleta = st.columns(min(k_seleccionado, 8))
 for i, (rgb, pct) in enumerate(zip(centros_rgb, porcentajes)):
     hex_code = rgb_a_hex(rgb)
@@ -152,8 +142,8 @@ for i, (rgb, pct) in enumerate(zip(centros_rgb, porcentajes)):
 
 st.divider()
 
-# --- MÉTRICAS Y EXPLICACIÓN PARA DEFENDER EN CLASE ---
-st.subheader("📊 Análisis Técnico y Preguntas de Defensa")
+# --- MÉTRICAS TÉCNICAS ---
+st.subheader("📊 Datos del Modelo")
 
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Colores Originales (Aprox)", f"{metricas['colores_unicos_orig']:,}")
