@@ -13,27 +13,60 @@ st.set_page_config(
     layout="wide"
 )
 
-# Estilos CSS personalizados
-st.markdown("""
+# --- BARRA LATERAL (Panel de Control) ---
+st.sidebar.header("⚙️ Configuración")
+
+# Selector de Tema (Modo Oscuro / Claro)
+modo_oscuro = st.sidebar.toggle("Modo Oscuro 🌙", value=True)
+
+# Variables dinámicas según el tema seleccionado
+if modo_oscuro:
+    bg_color = "#0f172a"
+    text_color = "#f8fafc"
+    card_bg = "#1e293b"
+    border_color = "rgba(255, 255, 255, 0.15)"
+else:
+    bg_color = "#f1f5f9"
+    text_color = "#0f172a"
+    card_bg = "#ffffff"
+    border_color = "rgba(0, 0, 0, 0.15)"
+
+# Inyección de estilos CSS dinámicos
+st.markdown(f"""
 <style>
-    .stApp { background-color: #0f172a; color: #f8fafc; }
-    .title-banner {
+    .stApp {{
+        background-color: {bg_color};
+        color: {text_color};
+    }}
+    .stMarkdown, p, h1, h2, h3, h4, h5, h6, label, span {{
+        color: {text_color} !important;
+    }}
+    .title-banner {{
         background: linear-gradient(90deg, #0284c7 0%, #6366f1 100%);
         padding: 20px;
         border-radius: 12px;
-        color: white;
+        color: #ffffff !important;
         text-align: center;
         margin-bottom: 25px;
-    }
-    .color-card {
-        padding: 10px;
+    }}
+    .title-banner h1, .title-banner h3 {{
+        color: #ffffff !important;
+    }}
+    .color-card {{
+        padding: 12px;
         border-radius: 8px;
         text-align: center;
-        color: white;
+        color: #ffffff !important;
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        border: 1px solid rgba(255,255,255,0.2);
-    }
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        border: 1px solid {border_color};
+    }}
+    div[data-testid="stMetric"] {{
+        background-color: {card_bg};
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid {border_color};
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -62,9 +95,6 @@ def crear_imagen_muestra():
     draw.polygon([(200, 50), (350, 80), (280, 220)], fill=(34, 197, 94))
     draw.ellipse([100, 220, 250, 370], fill=(234, 179, 8))
     return img
-
-# --- BARRA LATERAL (Panel de Control) ---
-st.sidebar.header("⚙️ Configuración del Modelo")
 
 archivo_subido = st.sidebar.file_uploader(
     "1. Sube tu imagen (JPG, PNG):", 
