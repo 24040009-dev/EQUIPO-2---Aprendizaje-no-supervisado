@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image, ImageDraw
 import time
 import numpy as np
+import io  # <-- Nueva librería para manejar el buffer de descarga en memoria
 
 # Importamos la lógica de Inteligencia Artificial desde nuestro backend (modelo.py)
 from modelo import comprimir_imagen, rgb_a_hex
@@ -151,6 +152,19 @@ with col_der:
     st.markdown(f"### Imagen Comprimida (K = {k_seleccionado})")
     st.image(imagen_comprimida, use_container_width=True)
     st.caption(f"⚡ Tiempo de cómputo: {tiempo_ejecucion:.2f} s | 🎨 Reducido a solo **{k_seleccionado}** colores exactos")
+    
+    # --- PREPARACIÓN DEL BOTÓN DE DESCARGA ---
+    buffer_descarga = io.BytesIO()
+    imagen_comprimida.save(buffer_descarga, format="PNG")
+    bytes_imagen = buffer_descarga.getvalue()
+
+    st.download_button(
+        label=f"💾 Descargar Imagen Comprimida (K={k_seleccionado})",
+        data=bytes_imagen,
+        file_name=f"imagen_comprimida_k{k_seleccionado}.png",
+        mime="image/png",
+        use_container_width=True
+    )
 
 st.divider()
 
